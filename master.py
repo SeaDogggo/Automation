@@ -1,9 +1,8 @@
-import os
 import sys
-import subprocess
 from pathlib import Path
 from datetime import datetime
 from amass.amass import Amass
+from massdns.massdns import MassDns
 
 
 class Master:
@@ -21,9 +20,7 @@ class Master:
             return
 
         Amass(self.target, self.working_dir).run_all()
-
-        # self.run_sub_domain_brute_force()
-        self.remove_wildcard_sub_domains()
+        MassDns('./{}/domains-all-amass'.format(self.working_dir), self.working_dir).run_all()
 
     def parse_args(self):
         for i, arg in enumerate(sys.argv):
@@ -37,27 +34,6 @@ class Master:
 
     def log(self, msg):
         print('[+] {}'.format(msg))
-
-    def run_sub_domain_brute_force(self):
-        if self.has_subdomain_bruteforce_run_today():
-            self.log('Skipping domain brute force')
-            return
-
-        domain_file = Path('{}/domains'.format(self.working_dir))
-        full_path = os.getcwd() + '/' + str(domain_file)
-
-        with open('{}/domains-brute'.format(self.working_dir), "w") as outfile:
-            subprocess.run(['bruteDomains', full_path], stdout=outfile)
-
-        self.log('Domain brute force finished')
-
-    def has_subdomain_bruteforce_run_today(self):
-        domain_file = Path('{}/domains-brute'.format(self.working_dir))
-        print(os.getcwd() + '/' + str(domain_file))
-        return domain_file.is_file()
-
-    def remove_wildcard_sub_domains(self):
-        return True
 
 
 Master()
