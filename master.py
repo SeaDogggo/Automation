@@ -3,6 +3,7 @@ from pathlib import Path
 from datetime import datetime
 from amass.amass import Amass
 from massdns.massdns import MassDns
+from httprobe.httprobe import HttProbe
 
 
 class Master:
@@ -21,6 +22,7 @@ class Master:
 
         Amass(self.target, self.working_dir).run_all()
         MassDns('./{}/domains-all-amass'.format(self.working_dir), self.working_dir).run_all()
+        HttProbe(self.working_dir).run_all()
 
     def parse_args(self):
         for i, arg in enumerate(sys.argv):

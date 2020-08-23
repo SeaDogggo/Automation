@@ -24,7 +24,6 @@ class MassDns:
 
     def brute_force_domains(self):
         domains = open(self.targets_file).read().split('\n')
-        print(domains)
         blacklist = open(self.black_list).read().split('\n')
 
         for domain in domains:
