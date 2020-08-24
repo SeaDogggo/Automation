@@ -1,3 +1,4 @@
+import os
 import sys
 from pathlib import Path
 from datetime import datetime
@@ -27,9 +28,23 @@ class Master:
     def parse_args(self):
         for i, arg in enumerate(sys.argv):
             if arg == '-t':
-                self.target = sys.argv[i + 1]
-                self.working_dir = self.target + '/' + datetime.today().strftime('%d-%m-%Y')
-                self.mkdir(self.working_dir)
+                self.set_working_dir(i)
+
+    def set_working_dir(self, i):
+        source = self.get_automation_source()
+        if not source:
+            self.log('AUTOMATION_SOURCE variable not set')
+            return
+
+        self.target = sys.argv[i + 1]
+        self.working_dir = '{}/{}/{}'.format(source, self.target, datetime.today().strftime('%d-%m-%Y'))
+        self.mkdir(self.working_dir)
+
+    def get_automation_source(self):
+        try:
+            return os.environ['AUTOMATION_SOURCE']
+        except KeyError:
+            return ''
 
     def mkdir(self, name):
         Path(name).mkdir(parents=True, exist_ok=True)
