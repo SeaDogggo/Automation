@@ -8,6 +8,7 @@ class HttProbe:
         self.working_dir = working_dir
         self.results = '{}/domains-probed'.format(working_dir)
         self.unique_domains = '{}/domains-all'.format(working_dir)
+        self.blacklist_file = './httprobe/blacklist'
 
     def run_all(self):
         self.log('Starting httprobe jobs')
@@ -33,9 +34,9 @@ class HttProbe:
         targets = self.get_probe_targets_files()
 
         with open(self.unique_domains, "w") as outfile:
-            cat_cmd = ['cat'] + targets
-            cat = subprocess.Popen(cat_cmd, stdout=subprocess.PIPE)
-            sort = subprocess.Popen(['sort', '-u'], stdin=cat.stdout, stdout=outfile)
+            cat = subprocess.Popen(['awk', '1'] + targets, stdout=subprocess.PIPE)
+            grep_blacklist = subprocess.Popen(['grep', '-v', '-f', self.blacklist_file], stdin=cat.stdout, stdout=subprocess.PIPE)
+            sort = subprocess.Popen(['sort', '-u'], stdin=grep_blacklist.stdout, stdout=outfile)
             sort.wait()
 
     def get_probe_targets_files(self):

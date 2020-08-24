@@ -25,7 +25,7 @@ class Master:
         Amass(self.target, self.working_dir).run_all()
         MassDns('{}/domains-all-amass'.format(self.working_dir), self.working_dir).run_all()
         HttProbe(self.working_dir).run_all()
-        UrlScraper('{}/domains-all'.format(self.working_dir), self.working_dir).run_all()
+        # UrlScraper('{}/domains-all'.format(self.working_dir), self.working_dir).run_all()
 
     def parse_args(self):
         for i, arg in enumerate(sys.argv):
