@@ -1,0 +1,19 @@
+import os
+import sys
+
+from logger.logger import Logger
+
+
+def get_env_variable(name):
+    try:
+        return os.environ[name]
+    except KeyError:
+        return ''
+
+
+def get_recon_path():
+    try:
+        return os.environ['RECON_PATH']
+    except KeyError:
+        Logger('util').error('RECON_PATH variable not set')
+        sys.exit()

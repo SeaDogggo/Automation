@@ -1,38 +1,34 @@
 import subprocess
-from pathlib import Path
+
+from file.util import does_file_exist
+from logger.logger import Logger
 
 
 class HttProbe:
 
     def __init__(self, working_dir):
         self.working_dir = working_dir
+        self.logger = Logger('Httprobe')
         self.results = '{}/domains-probed'.format(working_dir)
         self.all_domains = '{}/domains-all'.format(working_dir)
-        self.blacklist_file = './httprobe/blacklist'
+        self.blacklist_file = '{}/../config/blacklists/httprobe'.format(working_dir)
 
     def run_all(self):
-        self.log('Starting httprobe jobs')
+        self.logger.info('Starting httprobe jobs')
         self.run_httprobe()
-        self.log('Finished httprobe jobs')
-
-    def log(self, msg):
-        print('[+] {}'.format(msg))
+        self.logger.info('Finished httprobe jobs')
 
     def run_httprobe(self):
-        if self.does_file_exist(self.results):
-            self.log('Skipping httprobe')
+        if does_file_exist(self.results):
+            self.logger.info('Skipping httprobe')
             return
 
         self.find_all_domains()
         self.httprobe()
 
-    def does_file_exist(self, file_path):
-        file = Path(file_path)
-        return file.is_file()
-
     def find_all_domains(self):
-        if self.does_file_exist(self.all_domains):
-            self.log('Skipping domains-all file generation')
+        if does_file_exist(self.all_domains):
+            self.logger.info('Skipping domains-all file generation')
             return
 
         targets = self.get_probe_targets_files()

@@ -1,26 +1,29 @@
 import json
 import subprocess
-from pathlib import Path
+
+from file.util import does_file_exist
+from logger.logger import Logger
 
 
 class MassDns:
 
-    def __init__(self, targets, working_dir):
-        self.targets_file = targets
+    def __init__(self, working_dir):
         self.working_dir = working_dir
-        self.black_list = './massdns/blacklist'
-        self.resolvers = './massdns/resolvers.txt'
-        self.word_list_file = './massdns/commonspeak'
-        self.results = '{}/domains-brute-massdns'.format(self.working_dir)
+        self.logger = Logger('MassDns')
+        self.results = '{}/domains-brute-massdns'.format(working_dir)
+        self.targets_file = '{}/domains-all-amass'.format(working_dir)
+        self.black_list = '{}/../config/blacklists/massdns'.format(working_dir)
+        self.word_list_file = '{}/../../massdns/commonspeak'.format(working_dir)
+        self.resolvers = '{}/../../massdns/resolvers.txt'.format(working_dir)
 
     def run_all(self):
-        self.log('Starting MassDNS jobs')
-        if self.has_massdns_run_today(self.results):
-            self.log('Skipping MassDNS brute force')
+        self.logger.info('Starting MassDNS jobs')
+        if does_file_exist(self.results):
+            self.logger.info('Skipping MassDNS brute force')
             return
 
         self.brute_force_domains()
-        self.log('Finished MassDNS jobs')
+        self.logger.info('Finished MassDNS jobs')
 
     def brute_force_domains(self):
         domains = open(self.targets_file).read().split('\n')
@@ -32,13 +35,6 @@ class MassDns:
 
             sub_domains = self.construct_sub_domains(domain)
             self.get_massdns(sub_domains)
-
-    def has_massdns_run_today(self, scan_results):
-        domain_file = Path(scan_results)
-        return domain_file.is_file()
-
-    def log(self, msg):
-        print('[+] {}'.format(msg))
 
     def construct_sub_domains(self, root_domain):
         word_list = open(self.word_list_file).read().split('\n')

@@ -1,11 +1,12 @@
-import os
 import sys
-from pathlib import Path
 from datetime import datetime
+
 from amass.amass import Amass
-from massdns.massdns import MassDns
+from command_line.util import get_recon_path
+from file.util import mkdir
 from httprobe.httprobe import HttProbe
-from urls.url_scraper import UrlScraper
+from logger.logger import Logger
+from massdns.massdns import MassDns
 
 
 class Master:
@@ -14,16 +15,17 @@ class Master:
     working_dir = str()
 
     def __init__(self):
+        self.logger = Logger('Master')
         self.run()
 
     def run(self):
         self.parse_args()
         if not self.target:
-            self.log('Provide target with -t')
+            self.logger.error('Provide target with -t')
             return
 
         Amass(self.target, self.working_dir).run_all()
-        MassDns('{}/domains-all-amass'.format(self.working_dir), self.working_dir).run_all()
+        MassDns(self.working_dir).run_all()
         HttProbe(self.working_dir).run_all()
         # UrlScraper('{}/domains-all'.format(self.working_dir), self.working_dir).run_all()
 
@@ -33,26 +35,10 @@ class Master:
                 self.set_working_dir(i)
 
     def set_working_dir(self, i):
-        source = self.get_automation_source()
-        if not source:
-            self.log('AUTOMATION_SOURCE variable not set')
-            return
-
+        recon_path = get_recon_path()
         self.target = sys.argv[i + 1]
-        self.working_dir = '{}/{}/{}'.format(source, self.target, datetime.today().strftime('%d-%m-%Y'))
-        self.mkdir(self.working_dir)
-
-    def get_automation_source(self):
-        try:
-            return os.environ['AUTOMATION_SOURCE']
-        except KeyError:
-            return ''
-
-    def mkdir(self, name):
-        Path(name).mkdir(parents=True, exist_ok=True)
-
-    def log(self, msg):
-        print('[+] {}'.format(msg))
+        self.working_dir = '{}/library/{}/{}'.format(recon_path, self.target, datetime.today().strftime('%d-%m-%Y'))
+        mkdir(self.working_dir)
 
 
 Master()
