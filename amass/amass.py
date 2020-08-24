@@ -48,5 +48,6 @@ class Amass:
     def aggregate_results(self):
         with open(self.amass_results, "w") as outfile:
             cat = subprocess.Popen(['cat', self.passive_scan_results, self.brute_force_results], stdout=subprocess.PIPE)
-            subprocess.Popen(['sort', '-u'], stdin=cat.stdout, stdout=outfile)
+            sort = subprocess.Popen(['sort', '-u'], stdin=cat.stdout, stdout=outfile)
+            sort.wait()
 

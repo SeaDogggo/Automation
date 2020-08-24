@@ -35,7 +35,8 @@ class HttProbe:
         with open(self.unique_domains, "w") as outfile:
             cat_cmd = ['cat'] + targets
             cat = subprocess.Popen(cat_cmd, stdout=subprocess.PIPE)
-            subprocess.Popen(['sort', '-u'], stdin=cat.stdout, stdout=outfile)
+            sort = subprocess.Popen(['sort', '-u'], stdin=cat.stdout, stdout=outfile)
+            sort.wait()
 
     def get_probe_targets_files(self):
         return [
@@ -46,4 +47,8 @@ class HttProbe:
     def httprobe(self):
         with open(self.results, "w") as outfile:
             cat = subprocess.Popen(['cat', self.unique_domains], stdout=subprocess.PIPE)
-            subprocess.Popen(['httprobe'], stdin=cat.stdout, stdout=outfile)
+            probe = subprocess.Popen(['httprobe'], stdin=cat.stdout, stdout=subprocess.PIPE)
+            sed_0 = subprocess.Popen(['sed', 's/http:\/\///g'], stdin=probe.stdout, stdout=subprocess.PIPE)
+            sed_1 = subprocess.Popen(['sed', 's/https:\/\///g'], stdin=sed_0.stdout, stdout=subprocess.PIPE)
+            sort = subprocess.Popen(['sort', '-u'], stdin=sed_1.stdout, stdout=outfile)
+            sort.wait()

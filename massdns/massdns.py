@@ -56,6 +56,7 @@ class MassDns:
         domains_str = bytes('\n'.join(tagets), 'ascii')
         proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, stdin=subprocess.PIPE)
         stdout, _ = proc.communicate(input=domains_str)
+        proc.wait()
         return [j.decode('utf-8').strip() for j in stdout.splitlines() if j != b'\n']
 
     def get_massdns(self, targets):
