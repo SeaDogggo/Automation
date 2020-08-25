@@ -7,14 +7,14 @@ from logger.logger import Logger
 
 class MassDns:
 
-    def __init__(self, working_dir):
+    def __init__(self, working_dir, project_path):
         self.working_dir = working_dir
         self.logger = Logger('MassDns')
         self.results = '{}/domains-brute-massdns'.format(working_dir)
         self.targets_file = '{}/domains-all-amass'.format(working_dir)
         self.black_list = '{}/../config/blacklists/massdns'.format(working_dir)
-        self.word_list_file = '{}/../../massdns/commonspeak'.format(working_dir)
-        self.resolvers = '{}/../../massdns/resolvers.txt'.format(working_dir)
+        self.word_list_file = '{}/massdns/commonspeak'.format(project_path)
+        self.resolvers = '{}/massdns/resolvers.txt'.format(project_path)
 
     def run_all(self):
         self.logger.info('Starting MassDNS jobs')

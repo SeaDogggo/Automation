@@ -40,10 +40,11 @@ class HttProbe:
             sort.wait()
 
     def get_probe_targets_files(self):
-        return [
+        files = [
             '{}/domains-all-amass'.format(self.working_dir),
             '{}/domains-brute-massdns'.format(self.working_dir)
         ]
+        return [file for file in files if does_file_exist(file)]
 
     def httprobe(self):
         with open(self.results, "w") as outfile:
