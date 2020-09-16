@@ -8,6 +8,7 @@ from file.util import mkdir
 from httprobe.httprobe import HttProbe
 from logger.logger import Logger
 from massdns.massdns import MassDns
+from smuggler.smuggler import Smuggler
 from subjack.subjack import Subjack
 
 
@@ -53,6 +54,7 @@ class Master:
         # UrlScraper('{}/domains-all'.format(working_dir), working_dir).run_all()
         # Meg(working_dir).run()
         Subjack(working_dir).run()
+        Smuggler(working_dir).run()
 
     def create_working_dir(self, target):
         working_dir = '{}/library/{}/{}'.format(self.recon_path, target, datetime.today().strftime('%d-%m-%Y'))
