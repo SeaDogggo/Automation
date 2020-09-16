@@ -25,3 +25,11 @@ def get_project_path():
     except KeyError:
         Logger('util').error('RECON_PROJECT_PATH variable not set')
         sys.exit()
+
+
+def get_smuggler_path():
+    try:
+        return os.environ['SMUGGLER_PATH']
+    except KeyError:
+        Logger('util').error('RECON_PROJECT_PATH variable not set')
+        sys.exit()

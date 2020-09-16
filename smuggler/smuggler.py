@@ -1,5 +1,6 @@
 import subprocess
 
+from command_line.util import get_smuggler_path
 from file.util import does_file_exist
 from file.util import mkdir
 from logger.logger import Logger
@@ -21,12 +22,13 @@ class Smuggler:
         self.logger.info('Started Smuggler')
         mkdir('{}/smuggler'.format(self.working_dir))
         cat = subprocess.Popen(['cat', self.domains_probed], stdout=subprocess.PIPE)
-        subjack = subprocess.Popen(self.get_smuggler_cmd(), shell=True, stdin=cat.stdout, stdout=subprocess.PIPE)
+        subjack = subprocess.Popen(self.get_smuggler_cmd(), stdin=cat.stdout, stdout=subprocess.PIPE)
         subjack.wait()
         self.logger.info('Finished Smuggler')
 
     def get_smuggler_cmd(self):
-        return ['smuggler',
+        return ['python3',
+                get_smuggler_path(),
                 '-l',
                 self.results_file,
                 '-q']
