@@ -26,7 +26,7 @@ class Subjack:
     def get_subjack_cmd(self):
         return ['subjack',
                 '-w',
-                '{}/domains-all-amass'.format(self.working_dir),
+                '{}/domains-all'.format(self.working_dir),
                 '-t',
                 '100',
                 '-timeout',

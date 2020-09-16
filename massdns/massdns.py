@@ -11,7 +11,7 @@ class MassDns:
         self.working_dir = working_dir
         self.logger = Logger('MassDns')
         self.results = '{}/domains-brute-massdns'.format(working_dir)
-        self.targets_file = '{}/domains-all-amass'.format(working_dir)
+        self.targets_file = '{}/amass/domains-all-amass'.format(working_dir)
         self.black_list = '{}/../config/blacklists/massdns'.format(working_dir)
         self.word_list_file = '{}/massdns/commonspeak'.format(project_path)
         self.resolvers = '{}/massdns/resolvers.txt'.format(project_path)
