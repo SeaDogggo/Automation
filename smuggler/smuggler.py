@@ -22,7 +22,7 @@ class Smuggler:
         self.logger.info('Started Smuggler')
         mkdir('{}/smuggler'.format(self.working_dir))
         cat = subprocess.Popen(['cat', self.domains_probed], stdout=subprocess.PIPE)
-        subjack = subprocess.Popen(self.get_smuggler_cmd(), stdin=cat.stdout, stdout=subprocess.PIPE)
+        subjack = subprocess.Popen(self.get_smuggler_cmd(), stdin=cat.stdout)
         subjack.wait()
         self.logger.info('Finished Smuggler')
 
